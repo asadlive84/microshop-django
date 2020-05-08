@@ -78,11 +78,11 @@ class Account(models.Model):
     def save(self, *args, **kwargs):
         self.unpaid_money = sum([item.unpaid_money for item in self.customer.ordered_set.all()])
         self.paid_money = sum([item.customer_paid for item in self.customer.ordered_set.all()])
-        self.customer_credit = sum([x.customer_credit for x in self.customerdebitcredit_set.all()])
-        self.customer_debit = sum([x.customer_debit for x in self.customerdebitcredit_set.all()])
-        if self.unpaid_money > self.paid_money:
+        self.customer_credit = sum([x.customer_credit for x in self.customerdebitcredit_set.all()])+self.paid_money
+        self.customer_debit = sum([x.customer_debit for x in self.customerdebitcredit_set.all()])+self.unpaid_money
+        if self.customer_credit < self.customer_debit:
             self.paid_status = False
-        elif self.unpaid_money < self.paid_money:
+        elif self.customer_credit >= self.customer_debit:
             self.paid_status = True
 
         super().save(*args, **kwargs)
