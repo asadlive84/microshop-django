@@ -92,10 +92,9 @@ class Account(models.Model):
 def order_saved(sender, instance, created=False, **kwargs):
     if created:
         instance.customer.account.extra_info = "f"
-        instance.customer.account.save() \
- \
- \
-    @receiver(post_save, sender=CustomerDebitCredit)
+        instance.customer.account.save()
+
+@receiver(post_save, sender=CustomerDebitCredit)
     def customer_debit_credit_saved(sender, instance, created=False, **kwargs):
         if created:
             instance.customer_account.extra_info = "f"
