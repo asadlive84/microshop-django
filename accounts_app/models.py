@@ -95,7 +95,7 @@ def order_saved(sender, instance, created=False, **kwargs):
         instance.customer.account.save()
 
 @receiver(post_save, sender=CustomerDebitCredit)
-    def customer_debit_credit_saved(sender, instance, created=False, **kwargs):
-        if created:
-            instance.customer_account.extra_info = "f"
-            instance.customer_account.save()
+def customer_debit_credit_saved(sender, instance, created=False, **kwargs):
+    if created:
+        instance.customer_account.extra_info = "f"
+        instance.customer_account.save()
