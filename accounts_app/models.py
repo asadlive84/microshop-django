@@ -78,8 +78,8 @@ class Account(models.Model):
     def save(self, *args, **kwargs):
         self.unpaid_money = sum([item.unpaid_money for item in self.customer.ordered_set.all()])
         self.paid_money = sum([item.customer_paid for item in self.customer.ordered_set.all()])
-        self.customer_credit = sum([x.customer_credit for x in self.customerdebitcredit_set.all()])+self.paid_money
-        self.customer_debit = sum([x.customer_debit for x in self.customerdebitcredit_set.all()])+self.unpaid_money
+        self.customer_credit = sum([x.customer_credit for x in self.customerdebitcredit_set.all()]) + self.paid_money
+        self.customer_debit = sum([x.customer_debit for x in self.customerdebitcredit_set.all()]) + self.unpaid_money
         if self.customer_credit < self.customer_debit:
             self.paid_status = False
         elif self.customer_credit >= self.customer_debit:
@@ -88,3 +88,15 @@ class Account(models.Model):
         super().save(*args, **kwargs)
 
 
+@receiver(post_save, sender=Ordered)
+def order_saved(sender, instance, created=False, **kwargs):
+    if created:
+        instance.customer.account.extra_info = "f"
+        instance.customer.account.save() \
+ \
+ \
+    @receiver(post_save, sender=CustomerDebitCredit)
+    def customer_debit_credit_saved(sender, instance, created=False, **kwargs):
+        if created:
+            instance.customer_account.extra_info = "f"
+            instance.customer_account.save()
