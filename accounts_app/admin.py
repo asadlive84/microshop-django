@@ -1,5 +1,5 @@
 from django.contrib import admin
-from accounts_app.models import Customer, Account, Ordered, CustomerDebitCredit
+from accounts_app.models.models import Customer, Account, Ordered, CustomerDebitCredit
 
 
 admin.site.register(Customer)
