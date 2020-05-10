@@ -3,8 +3,32 @@ from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+
 User = get_user_model()
-from accounts_app.models.customer import Customer
+
+
+class Customer(models.Model):
+    """
+    Customer Model
+    """
+    name = models.CharField("Name", max_length=100)
+    phone_number = models.CharField("Mobile Number", max_length=100)
+    address = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return "Customer: %s" % self.name
+
+    def save(self, *args, **kwargs):
+        """
+        Create a new Account model object instance while created a new customer at Cutomer Table.
+        """
+        is_new = True if not self.id else False
+        super(Customer, self).save(*args, **kwargs)
+        if is_new:
+            account = Account(customer=self)
+            account.save()
 
 
 class Account(models.Model):

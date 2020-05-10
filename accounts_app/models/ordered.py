@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from accounts_app.models.customer import Customer
+from accounts_app.models.account import Customer
 
 User = get_user_model()
 
