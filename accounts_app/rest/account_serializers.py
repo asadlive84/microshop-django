@@ -21,7 +21,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ordered
-        fields = ['created_by', 'customer', 'product_name', 'product_price', 'customer_paid', 'paid_status',
+        fields = ['id', 'created_by', 'customer', 'product_name', 'product_price', 'customer_paid', 'paid_status',
                   'unpaid_money',
                   'order_custom_date', 'extra_info', 'created_at', 'updated_at']
 
@@ -46,7 +46,7 @@ class CustomerSerializer(serializers.ModelSerializer):
                   'customer_credit', 'customer_debit', 'ac_last_updated', ]
 
 
-class CustomerDetailSerializer(serializers.HyperlinkedModelSerializer):
+class CustomerDetailSerializer(serializers.ModelSerializer):
     """
     Customer and Account two tables and relationships between one to one
     So I show one serializer file
@@ -61,13 +61,21 @@ class CustomerDetailSerializer(serializers.HyperlinkedModelSerializer):
     ac_last_updated = serializers.DateTimeField(source='account.updated_at')
 
     # customer = OrderSerializer(many=True)
-    ordered_set = serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        view_name='order-details',
-    )
+    # ordered_set = serializers.HyperlinkedRelatedField(
+    #     many=True,
+    #     read_only=True,
+    #     view_name='order-details',
+    # )
+    #
+    # customerdebitcredit_set = serializers.HyperlinkedRelatedField(
+    #     many=True,
+    #     read_only=True,
+    #     view_name="debit-credit-details",
+    # )
+
+    customerdebitcredits = CustomerDebitCreditSerializer(many=True, read_only=True, source="customerdebitcredit_set")
+    ordered_set = OrderSerializer(many=True, read_only=True)
 
     class Meta:
         model = Customer
-        fields = ['id', 'name', 'phone_number', 'address', 'created_at', 'paid_money', 'unpaid_money', 'paid_status',
-                  'customer_credit', 'customer_debit', 'ac_last_updated', 'ordered_set']
+        fields = "__all__"
