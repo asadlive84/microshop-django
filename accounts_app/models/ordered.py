@@ -12,7 +12,7 @@ class Ordered(models.Model):
     Order Model of each customer. Customer has taken many orders and pay any amount or unpaid.
     """
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='ordered_set')
     product_name = models.CharField(max_length=100)
     product_price = models.FloatField()
     customer_paid = models.FloatField(default=0)
@@ -24,7 +24,7 @@ class Ordered(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return "%s ordered by %s" % (self.product_name, self.customer.name)
+        return "%s price: %s TK, Paid: %s TK Unpaid %s" % (self.product_name, self.product_price, self.customer_paid, self.unpaid_money)
 
     def save(self, *args, **kwargs):
         if self.product_price == self.customer_paid:
