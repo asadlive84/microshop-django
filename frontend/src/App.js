@@ -1,24 +1,60 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState, useEffect} from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
+import axios from 'axios'
 import './App.css';
+import CustomerList from './Customers/CustomerList'
+import NavBar from './NavBar/NavBar'
 
-function App() {
+import SingleCustomer from './Customers/SingleCustomer'
+
+
+
+const App = () => {
+
+  const [getCustomers, setGetCustomers] = useState([])
+  const [customers, setCustomers] = useState([...getCustomers])
+  const [keywords, setKeywords] = useState("")
+  const [individualCustomer, setIndividualCustomer] = useState([])
+
+ 
+
+  
+
+  useEffect( () => {
+    axios
+    .get("http://127.0.0.1:8000/api/v1/customer_list/")
+    .then(response => setGetCustomers(response.data))
+
+    const cus = getCustomers.filter(customer=>customer.name.includes(keywords) || customer.phone_number.includes(keywords))
+    setCustomers(cus)
+
+    
+    
+    
+  },[keywords])
+  
+
+  
+ 
+  
   return (
+   
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Router>
+        <NavBar setKeywords={setKeywords}/>
+        <Switch>
+          <Route exact path="/">
+            <CustomerList customers={customers} />
+          </Route>
+            <Route exact path="/customer_details/:customerId" component={()=><SingleCustomer  />} />
+        </Switch>
+        
+      </Router>
+      
     </div>
   );
 }
